@@ -20,7 +20,7 @@ collections:
       - { label: "标签", name: "keywords", widget: "list", required: false }
       - { label: "作者", name: "author", widget: "string", required: false }
       - { label: "章节", name: "section", widget: "string", required: false }
-      - { label: "摘要", name: "author", widget: "description", required: false }
+      - { label: "摘要", name: "description", widget: "string", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
 
   - name: 'settings'
