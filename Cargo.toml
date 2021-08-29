@@ -1,0 +1,26 @@
+[package]
+name = "mdbook-cms"
+version = "0.1.0"
+edition = "2018"
+authors = ["ylfeng"]
+description = "A preprocessor to add cms."
+homepage = "https://crates.io/crates/mdbook-cms"
+documentation = "https://crates.io/crates/mdbook-cms"
+repository = "https://github.com/alongwy/mdbook-cms"
+keywords = ["mdbook", "markdown", "cms", "summary"]
+readme = "README.md"
+license = "MIT"
+
+[dependencies]
+mdbook = "0.4"
+semver = "1"
+clap = "2.33"
+anyhow = "1"
+regex = "1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.8"
+lazy_static = "1"
+md-5 = "0.9"
+hex = "0.4"
+indexmap = "1.7"

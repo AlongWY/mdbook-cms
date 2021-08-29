@@ -1,0 +1,44 @@
+backend:
+  name: github
+  repo: username/repo
+  branch: main
+  cms_label_prefix: netlify-cms/
+  site_domain: netlify-id.netlify.app
+
+locale: 'zh_Hans'
+media_folder: "src/media"
+public_folder: "/media"
+
+collections:
+  - name: "docs"
+    label: "文档"
+    folder: "src"
+    create: true
+    media_folder: '{{filename}}'
+    public_folder: '{{filename}}'
+    fields:
+      - { label: "章节", name: "section", widget: "string" }
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "正文", name: "body", widget: "markdown" }
+
+  - name: 'settings'
+    label: '设置'
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: '网站设置'
+        file: 'book.toml'
+        extension: toml
+        description: '通用网站设置'
+        fields:
+          - name: 'book'
+            label: '参数'
+            widget: 'object'
+            fields:
+              - { label: '作者', name: 'authors', widget: 'list' }
+              - { label: '语言', name: 'language', widget: 'string', default: "cn" }
+              - { label: '多语', name: 'multilingual', widget: 'boolean', default:false }
+
+          
