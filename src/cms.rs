@@ -1,4 +1,3 @@
-use hex;
 use indexmap::IndexMap;
 use md5::{Digest, Md5};
 use mdbook::book::{Book, BookItem};
@@ -106,7 +105,7 @@ impl Preprocessor for CMSPreprocessor {
                         }
                     }
                 });
-                return Ok(mdbook.book);
+                Ok(mdbook.book)
             }
             Err(e) => {
                 panic!("{}", e);
@@ -151,23 +150,21 @@ impl Match {
     }
 }
 
-fn md5(buf: &String) -> String {
+fn md5(buf: &str) -> String {
     let mut hasher = Md5::new();
     hasher.update(buf.as_bytes());
     let f = hasher.finalize();
     let md5_vec = f.as_slice();
-    let md5_string = hex::encode_upper(md5_vec);
-
-    return md5_string;
+    hex::encode_upper(md5_vec)
 }
 
-pub fn gen_summary(source_dir: &String, title_way: &str) {
-    let mut source_dir = source_dir.clone();
-    if !source_dir.ends_with("/") {
-        source_dir.push_str("/")
+pub fn gen_summary(source_dir: &str, title_way: &str) {
+    let mut source_dir = source_dir.to_string();
+    if !source_dir.ends_with('/') {
+        source_dir.push('/')
     }
-    let group = walk_dir(source_dir.clone().as_str(), title_way);
-    let lines = gen_summary_lines(source_dir.clone().as_str(), &group, title_way);
+    let group = walk_dir(&source_dir, title_way);
+    let lines = gen_summary_lines(&source_dir, &group, title_way);
     let buff: String = lines.join("\n");
 
     let new_md5_string = md5(&buff);
@@ -196,16 +193,14 @@ pub fn gen_summary(source_dir: &String, title_way: &str) {
         .read(true)
         .create(true)
         .truncate(true)
-        .open(source_dir.clone() + "/" + SUMMARY_FILE)
+        .open(source_dir + "/" + SUMMARY_FILE)
         .unwrap();
     let mut summary_file_writer = BufWriter::new(summary_file);
     summary_file_writer.write_all(buff.as_bytes()).unwrap();
 }
 
-fn count(s: &String) -> usize {
-    let v: Vec<&str> = s.split("/").collect();
-    let cnt = v.len();
-    cnt
+fn count(s: &str) -> usize {
+    s.split('/').count()
 }
 
 fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<String> {
@@ -214,7 +209,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
     let path = group.path.replace(root_dir, "");
     let cnt = count(&path);
 
-    let buff_spaces = String::from(" ".repeat(4 * (cnt - 1)));
+    let buff_spaces = " ".repeat(4 * (cnt - 1));
     let mut name = group.name.clone();
 
     let buff_link: String;
@@ -222,14 +217,14 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
         name = String::from("Welcome");
     }
 
-    if path == "" {
+    if path.is_empty() {
         lines.push(String::from("# SUMMARY"));
         buff_link = String::new();
     } else {
         buff_link = format!("{}* [{}]()", buff_spaces, name);
     }
 
-    if buff_spaces.len() == 0 {
+    if buff_spaces.is_empty() {
         lines.push(String::from("\n"));
         if name != "Welcome" {
             lines.push(String::from("----"));
@@ -248,7 +243,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
         }
 
         let cnt = count(&path);
-        let buff_spaces = String::from(" ".repeat(4 * (cnt - 1)));
+        let buff_spaces = " ".repeat(4 * (cnt - 1));
 
         let buff_link: String;
 
@@ -258,7 +253,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
             Some(title) => title,
         };
 
-        if title_way != "filename" && title.len() > 0 {
+        if title_way != "filename" && title.is_empty() {
             buff_link = format!("{}* [{}]({})", buff_spaces, title, path);
         } else {
             buff_link = format!("{}* [{}]({})", buff_spaces, md.file, path);
@@ -277,7 +272,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
             if path.ends_with(README_FILE) {
                 continue;
             }
-            let buff_spaces = String::from(" ".repeat(4));
+            let buff_spaces = " ".repeat(4);
 
             let buff_link: String;
 
@@ -287,7 +282,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
                 Some(title) => title,
             };
 
-            if title_way != "filename" && title.len() > 0 {
+            if title_way != "filename" && title.is_empty() {
                 buff_link = format!("{}* [{}]({})", buff_spaces, title, path);
             } else {
                 buff_link = format!("{}* [{}]({})", buff_spaces, md.file, path);
@@ -313,7 +308,7 @@ fn get_meta(entry: &DirEntry, title_way: &str) -> Meta {
 
     match title_way {
         "first-line" => {
-            let lines = md_file_content.split("\n");
+            let lines = md_file_content.split('\n');
 
             let mut title: String = "".to_string();
             let mut first_h1_line = "";
@@ -324,7 +319,7 @@ fn get_meta(entry: &DirEntry, title_way: &str) -> Meta {
                 }
             }
 
-            if first_h1_line.len() > 0 {
+            if first_h1_line.is_empty() {
                 title = first_h1_line.to_string();
             }
 
@@ -362,7 +357,7 @@ fn walk_dir(dir: &str, title_way: &str) -> MdGroup {
         .unwrap()
         .to_string();
     let mut group = MdGroup {
-        name: name,
+        name,
         path: dir.to_string(),
         has_readme: false,
         group_list: vec![],
@@ -385,7 +380,7 @@ fn walk_dir(dir: &str, title_way: &str) -> MdGroup {
         if file_name == README_FILE {
             group.has_readme = true;
         }
-        let arr: Vec<&str> = file_name.split(".").collect();
+        let arr: Vec<&str> = file_name.split('.').collect();
         if arr.len() < 2 {
             continue;
         }
@@ -418,7 +413,7 @@ fn walk_dir(dir: &str, title_way: &str) -> MdGroup {
         }
     }
 
-    return group;
+    group
 }
 
 #[cfg(test)]
