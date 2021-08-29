@@ -253,7 +253,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
             Some(title) => title,
         };
 
-        if title_way != "filename" && title.is_empty() {
+        if title_way != "filename" && !title.is_empty() {
             buff_link = format!("{}* [{}]({})", buff_spaces, title, path);
         } else {
             buff_link = format!("{}* [{}]({})", buff_spaces, md.file, path);
@@ -281,8 +281,7 @@ fn gen_summary_lines(root_dir: &str, group: &MdGroup, title_way: &str) -> Vec<St
                 None => "",
                 Some(title) => title,
             };
-
-            if title_way != "filename" && title.is_empty() {
+            if title_way != "filename" && !title.is_empty() {
                 buff_link = format!("{}* [{}]({})", buff_spaces, title, path);
             } else {
                 buff_link = format!("{}* [{}]({})", buff_spaces, md.file, path);
