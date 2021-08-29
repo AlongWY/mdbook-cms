@@ -14,11 +14,13 @@ collections:
     label: "文档"
     folder: "src"
     create: true
-    media_folder: '{{filename}}'
-    public_folder: '{{filename}}'
     fields:
-      - { label: "章节", name: "section", widget: "string" }
       - { label: "标题", name: "title", widget: "string" }
+      - { label: "日期", name: "date", widget: "datetime", required: false }
+      - { label: "标签", name: "keywords", widget: "list", required: false }
+      - { label: "作者", name: "author", widget: "string", required: false }
+      - { label: "章节", name: "section", widget: "string", required: false }
+      - { label: "摘要", name: "author", widget: "description", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
 
   - name: 'settings'
@@ -37,8 +39,10 @@ collections:
             label: '参数'
             widget: 'object'
             fields:
+              - { label: '书名', name: 'title', widget: 'string' }
               - { label: '作者', name: 'authors', widget: 'list' }
+              - { label: '简介', name: 'description', widget: 'string' }
               - { label: '语言', name: 'language', widget: 'string', default: "cn" }
-              - { label: '多语', name: 'multilingual', widget: 'boolean', default:false }
+              - { label: '多语', name: 'multilingual', widget: 'boolean', default: false }
 
           
